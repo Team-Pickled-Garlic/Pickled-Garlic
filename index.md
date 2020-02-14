@@ -8,3 +8,7 @@ Recipients can easily respond to the sender, accept the request, or propose a ne
 iCalendar is supported by many products. 
 Normally, iCalendar data is exchanged using email, but it can also be used independently and is not limited to a certain transmission protocol.
 
+## [Milestone 1]
+* Team Page
+* Schedule page-Create schedule
+* 
