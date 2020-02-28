@@ -1,0 +1,14 @@
+{
+    "require": {
+        "twbs/bootstrap": "^4.4",
+        "twig/twig": "^3.0"
+    },
+    "scripts": {
+	"post-update-cmd": [
+	    "rm -rf public/client/bootstrap",
+	    "mkdir -p public/client/bootstrap",
+	    "cp -R vendor/twbs/bootstrap/dist/js public/client/bootstrap/",
+	    "cp -R vendor/twbs/bootstrap/dist/css public/client/bootstrap/"
+	]
+    }
+}

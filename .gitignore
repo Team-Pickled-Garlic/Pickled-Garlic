@@ -1,0 +1,8 @@
+# Ignore Composer Vendor files
+vendor/
+
+# Ignore Bootstrap files (Acquired via Composer)
+bootstrap/
+
+# Ignore Twig Cache 
+cache/
