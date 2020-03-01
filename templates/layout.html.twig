@@ -1,17 +1,40 @@
+{# This is the basic Twig template layout to be inherited by all templates #}
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{{ pageTitle }}</title>
 
-        <link rel="stylesheet" href="/client/style/style.css">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ pageTitle }}</title>
 
-        <link rel="stylesheet" href="/client/bootstrap/css/bootstrap.min.css">
+    {# Bootstrap 4 CSS #}
+    <link rel="stylesheet" href="/client/bootstrap/css/bootstrap.min.css">
 
-        <script src="/client/bootstrap/js/bootstrap.min.js"></script>
-    </head>
+    {# Custom CSS #}
+    <link rel="stylesheet" href="/client/css/style.css">
 
-    <body>
-        {% block content %}{% endblock content %}
-    </body>
+    {# jQuery 3.4.1 #}
+    <script src="/client/js/jquery.slim.min.js"></script>
+
+    {# Popper 1.16 #}
+    <script src="/client/js/popper.min.js"></script>
+
+    {# Bootstrap 4 JS #}
+    <script src="/client/bootstrap/js/bootstrap.min.js"></script>
+
+    {# Moment.js (w/ locales) #}
+    <script src="/client/js/moment.min.js"></script>
+
+    {# Our JS for this project #}
+    <script src="/client/js/pickledgarlic.js"></script>
+</head>
+
+<body>
+    {% include "navbar.html.twig" %}
+
+    {% include "midheader.html.twig" %}
+
+    {% block content %}{% endblock content %}
+
+</body>
+
 </html>

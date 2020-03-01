@@ -2,9 +2,31 @@
 
 {% block content %}
 <div class="container">
-    Test
-<p>
-    {{ test }}
-</p>
+    <h2>{{ pageTitle }}</h2>
+    <p>
+        The below button generates an .ics file for March 13, 2020 at the Hamilton Library from 10am to 1pm HST to
+        'Study for exam'.
+    </p>
+    <button class="btn btn-primary" type="button" onclick="downloadTest();">Generate .ics</button>
 </div>
+<script>
+    let download = (filename, text) => {
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+        element.setAttribute('download', filename);
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+    }
+
+    let downloadTest = () => {
+        let testEvent = new ICalendarGenerator('Study for Exam', '03-13-2020', '10:00:00', '13:00:00', 'Hamilton Library');
+        download('test.ics', testEvent.generateCal());
+    }
+
+</script>
 {% endblock content%}

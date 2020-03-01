@@ -6,3 +6,6 @@ bootstrap/
 
 # Ignore Twig Cache 
 cache/
+
+# Ignore VS Code config files
+.vscode/

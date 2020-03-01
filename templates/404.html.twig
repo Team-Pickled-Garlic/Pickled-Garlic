@@ -1,0 +1,10 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+<div class="container">
+    <h2>{{ pageTitle }}</h2>
+    <p>
+        Page "{{ request }}" does not exist as a part of this web-application. Please make sure that the complete URL is correct.
+    </p>
+</div>
+{% endblock content%}
