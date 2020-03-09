@@ -59,10 +59,9 @@ This documentation will cover how to setup a local deployment on Windows 10 usin
 1. Install PHP 7.4
     This step is done within Ubuntu
     ```shell
-    apt-add-repository ppa:ondrej/phpsudo
     apt-add-repository ppa:ondrej/php
     apt-get update
-    apt-get install -y php7.4 php7.4-fpm php7.4-zip libapache-mod-php7
+    apt-get install -y php7.4 php7.4-fpm php7.4-zip libapache2-mod-php7.4
     ```  
 
 1. Install Composer 
@@ -85,7 +84,7 @@ This documentation will cover how to setup a local deployment on Windows 10 usin
     This step is done within Ubuntu
     ```shell
     service apache2 restart
-    service php-fpm7.4 restart
+    service php7.4-fpm restart
     ```
 
 1. Open your web browser of choice, type `localhost` in the URL bar then hit [Enter]
