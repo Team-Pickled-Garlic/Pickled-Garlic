@@ -1,59 +1,92 @@
 # Pickled-Garlic
 
-## Nginx Conf
-Left as default.
-```shell
-user www-data;
-worker_processes auto;
-pid /run/nginx.pid;
-include /etc/nginx/modules-enabled/*.conf;
+## Project Dependencies 
+1. PHP 7.4
+1. Bootstrap 4
+1. JavaScript APIs
+    - WindowDatePicker
+    - Moment.js
 
-event {
-    worker_connections 768;
-}
+## Setting up a Local Project Deployment
+This documentation will cover how to setup a local deployment on Windows 10 using Windows Subsystem for Linux (Ubuntu).
 
-http {
-    sendfile on;
-    tcp_nopush on;
-    tcp_nodelay on;
-    keepalive_timeout 65;
-    type_hash_max_size 2048;
+1. Install Windows Subsystem for Linux (WSL). Install the Ubuntu version.  
+    WSL is only supported on Windows 10. You can view the install instructions on Microsoft's website at [https://docs.microsoft.com/en-us/windows/wsl/install-win10](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
-    include /etc/nginx/mine.types;
-    default_type application/octet-stream;
+1. Clone Git Repository 
+    Open up a shell such as Git Bash and change into the desired directory to place this repo  
+    For example, I placed mine in `C:\Users\user\Documents\git-repos`
+    ```shell
+    git clone https://github.com/Team-Pickled-Garlic/Pickled-Garlic.git
+    ``` 
 
-    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
-    ssl_prefer_server_ciphers on;
+1. Install Apache Webserver
+    This step is done within Ubuntu
+    ```shell
+    apt-add-repository ppa:ondrej/apache2
+    apt-get update
+    apt-get install -y apache2
+    ```  
 
-    access_log /var/log/nginx/access.log;
-    error_log /var/log/nginx/error.log;
+1. Apache Configuration
+    This step is done within Ubuntu
+    ```shell
+    vim /etc/apache2/sites-enabled/000-default.conf # Or preferred editor in lieu of vim
+    ```
 
-    gzip on;
+    Edit the config so that it contains the contents below, then exit the editor  
+    Comments are removed for ease of content viewing  
 
-    include /etc/nginx/conf.d/*.conf;
-    include /etc/nginx/sites-enabled/*;
-}
-```
+    ```shell
+    <VirtualHost *:80>
+        ServerName localhost
 
-## Nginx Sites-Available Conf
-```shell
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/devroot/public
+        FallbackResource /index.php
 
-    root /var/www/Pickled-Garlic;
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+    </VirtualHost>
+    ```
 
-    index index.php index.html index.htm index.nginx-debian.html;
+    Setup a symbolic link to point to where you cloned the repo  
+    Below is an example of what I would do if my repo is located at `C:\Users\user\Documents\git-repos\Pickled-Garlic`
+    ```shell
+    ln -s /mnt/c/Users/user/Documents/git-repos/Pickled-Garlic /var/www/devroot
+    ```
 
-    server_name _;
+1. Install PHP 7.4
+    This step is done within Ubuntu
+    ```shell
+    apt-add-repository ppa:ondrej/phpsudo
+    apt-add-repository ppa:ondrej/php
+    apt-get update
+    apt-get install -y php7.4 php7.4-fpm php7.4-zip libapache-mod-php7
+    ```  
 
-    location / {
-        try_files $uri $uri/ /index.php?$args;
-    }
+1. Install Composer 
+    This step is done within Ubuntu
+    ```shell
+    curl -sS https://getcomposer.org/installer | php
+    mv composer.phar /usr/local/bin/composer
+    composer -V # this should give an output if Composer has been installed correctly
+    ```  
 
-    location ~ \.php {
-        include snippets/fastcgi-php.conf;
-        fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
-    }
-}
-```
+1. Install Dependencies using Composer
+    This step is done within Ubuntu
+    ```shell
+    cd /var/www/devroot
+    composer install
+    composer update
+    ```
+
+1. Start/Restart Services
+    This step is done within Ubuntu
+    ```shell
+    service apache2 restart
+    service php-fpm7.4 restart
+    ```
+
+1. Open your web browser of choice, type `localhost` in the URL bar then hit [Enter]
+    The app should be open and running from the browser
