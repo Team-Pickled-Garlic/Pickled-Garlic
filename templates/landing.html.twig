@@ -7,8 +7,56 @@
         The below button generates an .ics file for March 13, 2020 at the Hamilton Library from 10am to 1pm HST to
         'Study for exam'.
     </p>
-    <button class="btn btn-primary" type="button" onclick="downloadTest();">Generate .ics</button>
+	<h3> Enter event name </h3>
+	<form id="event_name">
+	<input id="userInput">
+	</form>
+	<br>
+	<h3> Enter description </h3>
+	<div id="description"></div>
+	<input id="description">
+	<br>
+	<br>
+	<h3> Enter summary </h3>
+	<div id="summary"></div>
+	<input id="summary">
+	<br>
+	<br>
+	<h3> Enter location </h3>
+	<form id="locationForm">
+	<input id="locationInput">
+	</form>
+	<br>
+	<h3> Select start date and time </h3>
+	<div id="picker"></div>
+	<input id="demo">
+	<button id="toggle">Select</button>
+	<br>
+	<br>
+	<h3> Select end date and time </h3>
+	<div id="picker2"></div>
+	<input id="demo2">
+	<button id="toggle2">Select</button>
+	<br>
+	<br>
+	<button class="btn btn-primary" type="button" onclick="downloadTest();">Generate .ics</button>
 </div>
+<script>
+	const picker = new WindowDatePicker({
+      el: '#picker',
+      toggleEl: '#toggle',
+      inputEl: '#demo',
+	  type: 'DATEHOUR'
+});
+</script>
+<script>
+	const picker2 = new WindowDatePicker({
+      el: '#picker2',
+      toggleEl: '#toggle2',
+      inputEl: '#demo2',
+	  type: 'DATEHOUR'
+});
+</script>
 <script>
     let download = (filename, text) => {
         var element = document.createElement('a');
@@ -24,9 +72,10 @@
     }
 
     let downloadTest = () => {
-        let testEvent = new ICalendarGenerator('Study for Exam', '03-13-2020', '10:00:00', '13:00:00', 'Hamilton Library');
+		var input = document.getElementById("userInput");
+		var location_str = document.getElementById("locationInput");
+        let testEvent = new ICalendarGenerator(input.value, '03-13-2020', '10:00:00', '13:00:00', location_str.value);
         download('test.ics', testEvent.generateCal());
     }
-
 </script>
 {% endblock content%}
