@@ -179,6 +179,11 @@
             inputEl: '#end-date',
             type: 'DATEHOUR'
         });
+
+        // Prompts the user if they are sure they want to leave as leaving clears all event data
+        window.onbeforeunload = function () {
+            return "Event data will be lost if you leave the page. Are you sure?"
+        };
     });
 </script>
 {% endblock content%}
