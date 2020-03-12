@@ -3,12 +3,12 @@
 ## Project Dependencies 
 1. PHP 7.4
 1. [Twig](https://twig.symfony.com/)
-1. Bootstrap 4
-1. Popper.js
-1. jQuery
+1. [Bootstrap 4](https://getbootstrap.com/)
+1. [Popper.js](https://popper.js.org)
+1. [jQuery](https://jquery.com/)
 1. [DataTables](https://datatables.net/)
 1. [Window Date Picker](https://github.com/cevadtokatli/window-date-picker)
-1. Moment.js
+1. [Moment.js](https://momentjs.com)
 
 ## Setting up a Local Project Deployment
 This documentation will cover how to setup a local deployment on Windows 10 using Windows Subsystem for Linux (Ubuntu).
