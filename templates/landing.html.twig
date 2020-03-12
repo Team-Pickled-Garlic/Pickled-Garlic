@@ -14,7 +14,7 @@
         <div class="col">
             <button type="button" class="btn btn-sm btn-info" onclick="" title="Add event" data-toggle="modal"
                 data-target="#add-event-modal">+ Add Event</button>
-            <button type="button" class="btn btn-sm btn-outline-primary no-hover" onclick=""
+            <button id="generate-button" type="button" class="btn btn-sm btn-outline-primary no-hover"
                 title="Add events before generating" disabled>Generate .ics</button>
         </div>
     </div>
@@ -96,6 +96,12 @@
 
 </div>
 <script>
+    // Within elem, remove class target and add class replace
+    function substituteClass(elem, target, replace) {
+        $(elem).removeClass(target);
+        $(elem).addClass(replace);
+    } 
+
     let download = (filename, text) => {
         var element = document.createElement('a');
         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
@@ -156,6 +162,13 @@
                 event.endDate,
                 event.eventLocation
             ]).draw(false);
+
+            // Enable the generate button if disabled, since there now exists an event to generate an iCal file 
+            if ($('#generate-button').prop('disabled')) {
+                $('#generate-button').prop('disabled', false);
+                // Switches the button from outlined to filled in
+                substituteClass('#generate-button', 'btn-outline-primary', 'btn-primary');
+            }
         });
 
         // Creates the WindowDatePicker for start date
