@@ -50,7 +50,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="" method="POST">
+                <form id="event-form">
                     <div class="modal-body">
                         <div class="form-group">
                             <label>Event Title</label>
@@ -126,11 +126,28 @@
         e.preventDefault();
     });
 
+    var events = [];
+
     $(document).ready(function () {
         // Renders tables with class 'data-table' as a DataTable
         var tables = $('.data-table').DataTable({
             "dom": '<rt><"row"<"col"i><"col"p>>',
             "lengthMenu": [[-1], ["All"]]
+        });
+
+        // When the create event form is submitted
+        $('#event-form').on('submit', function(e){
+            e.preventDefault();
+            let params = new URLSearchParams($(this).serialize());
+            let obj = {
+                "eventTitle": params.get('eventTitle'),
+                "startDate": params.get('startDate'),
+                "endDate": params.get('endDate').length > 0 ? params.get('endDate') : params.get('startDate'),
+                "eventLocation": params.get('eventLocation'),
+                "eventDesc": params.get('eventDesc')
+            }
+            events.push(obj);
+            console.log(events);
         });
 
         // Creates the WindowDatePicker for start date
