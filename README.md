@@ -1,5 +1,7 @@
 # Pickled-Garlic
 
+This project is a web application designed to create iCalendar files. The user creates events they want to include on their calendar before an iCalendar.ics file is generated and made available to download. These files can then be imported into calendar services such as Google Calendar.  
+
 ## Project Dependencies 
 1. PHP 7.4
 1. [Twig](https://twig.symfony.com/)
@@ -16,7 +18,7 @@ This documentation will cover how to setup a local deployment on Windows 10 usin
 1. Install Windows Subsystem for Linux (WSL). Install the Ubuntu version.  
     WSL is only supported on Windows 10. You can view the install instructions on Microsoft's website at [https://docs.microsoft.com/en-us/windows/wsl/install-win10](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
-1. Clone Git Repository  
+1. Clone this Project's Git Repository  
     Open up a shell such as Git Bash and change into the desired directory to place this repo  
     For example, I placed mine in `C:\Users\user\Documents\git-repos`
     ```shell
@@ -54,7 +56,7 @@ This documentation will cover how to setup a local deployment on Windows 10 usin
     </VirtualHost>
     ```
 
-    Setup a symbolic link to point to where you cloned the repo  
+    Setup a symbolic link from `/var/www/devroot` to where you cloned the repo  
     Below is an example of what I would do if my repo is located at `C:\Users\user\Documents\git-repos\Pickled-Garlic`
     ```shell
     ln -s /mnt/c/Users/user/Documents/git-repos/Pickled-Garlic /var/www/devroot
@@ -91,7 +93,7 @@ This documentation will cover how to setup a local deployment on Windows 10 usin
     chown www-data /var/www/devroot/public/cache
     ```
 
-1. Start/Restart Services  
+1. Start/Restart Apache Webserver  
     This step is done within Ubuntu
     ```shell
     service apache2 restart
