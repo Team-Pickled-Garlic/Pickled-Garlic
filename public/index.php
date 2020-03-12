@@ -20,7 +20,7 @@ $twig = new Environment($loader, array(
 
 # Default values to be passed into Twig
 $twigVals = array(
-    'pageTitle' => 'Home',
+    'pageTitle' => 'iCal Generator',
 );
 
 # Takes the request URI. For example, in http://www.example.com/login, the request URI is '/login'

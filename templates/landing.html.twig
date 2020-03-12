@@ -2,12 +2,41 @@
 
 {% block content %}
 <div class="container">
-    <h2>{{ pageTitle }}</h2>
-    <p>
-        The below button generates an .ics file for March 13, 2020 at the Hamilton Library from 10am to 1pm HST to
-        'Study for exam'.
-    </p>
-    <button class="btn btn-primary" type="button" onclick="downloadTest();">Generate .ics</button>
+    <h2>iCalendar Generator</h2>
+
+    <div class="row mt-4">
+        <div class="col">
+            <h3>List of Events</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn btn-sm btn-info" onclick="">+ Add Event</button>
+            <button type="button" class="btn btn-sm btn-outline-primary" onclick="">Generate .ics</button>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md">
+            <table class="table table-striped data-table">
+                <thead>
+                    <th>Event Name</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Location</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>test</td>
+                        <td>test</td>
+                        <td>test</td>
+                        <td>test</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 <script>
     let download = (filename, text) => {
@@ -28,5 +57,12 @@
         download('test.ics', testEvent.generateCal());
     }
 
+    $(document).ready(function () {
+        // Renders tables with class 'data-table' as a DataTable
+        var tables = $('.data-table').DataTable({
+            "dom": '<rt><"row"<"col"i><"col"p>>',
+            "lengthMenu": [[-1], ["All"]]
+        });
+    });
 </script>
 {% endblock content%}
