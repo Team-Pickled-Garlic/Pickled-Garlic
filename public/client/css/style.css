@@ -34,3 +34,12 @@ h4 {
 .navbar-font {
   font-weight: 400 !important;
 }
+
+.modal-event-desc {
+  resize: none;
+  height: 8rem !important;
+}
+
+.inherit-height {
+  height: inherit;
+}

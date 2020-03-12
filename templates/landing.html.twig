@@ -12,9 +12,10 @@
 
     <div class="row">
         <div class="col">
-            <button type="button" class="btn btn-sm btn-info" onclick="" title="Add event">+ Add Event</button>
-            <button type="button" class="btn btn-sm btn-outline-primary no-hover" onclick="" title="Add events before generating"
-                disabled>Generate .ics</button>
+            <button type="button" class="btn btn-sm btn-info" onclick="" title="Add event" data-toggle="modal"
+                data-target="#add-event-modal">+ Add Event</button>
+            <button type="button" class="btn btn-sm btn-outline-primary no-hover" onclick=""
+                title="Add events before generating" disabled>Generate .ics</button>
         </div>
     </div>
 
@@ -38,6 +39,67 @@
             </table>
         </div>
     </div>
+
+    <div class="modal fade" id="add-event-modal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="event-modal-title"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="event-modal-title">Create Event</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="" method="POST">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Event Title</label>
+                            <input required type="text" class="form-control" name="eventTitle" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Date Start</label>
+                            <div class="input-group">
+                                <input id="start-date" type="text" class="form-control readonly inherit-height"
+                                    name="startDate" required>
+                                <div class="input-group-append">
+                                    <button id="show-start-date-picker" class="btn btn-secondary" type="button">
+                                        <img src="/assets/icons8-calendar-24.png">
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="start-date-picker"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Date End</label>
+                            <div class="input-group">
+                                <input id="end-date" type="text" class="form-control readonly inherit-height"
+                                    name="endDate">
+                                <div class="input-group-append">
+                                    <button id="show-end-date-picker" class="btn btn-secondary" type="button">
+                                        <img src="/assets/icons8-calendar-24.png">
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="end-date-picker"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" class="form-control" name="eventLocation">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea class="form-control modal-event-desc" name="eventDesc"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add Event</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 </div>
 <script>
     let download = (filename, text) => {
@@ -58,11 +120,39 @@
         download('test.ics', testEvent.generateCal());
     }
 
+    // Does not let any user input in text field
+    // Used to combine both readonly and required
+    $('.readonly').on('keydown paste', function(e){
+        e.preventDefault();
+    });
+
     $(document).ready(function () {
         // Renders tables with class 'data-table' as a DataTable
         var tables = $('.data-table').DataTable({
             "dom": '<rt><"row"<"col"i><"col"p>>',
             "lengthMenu": [[-1], ["All"]]
+        });
+
+        // Creates the WindowDatePicker for start date
+        const startDatePicker = new WindowDatePicker({
+            dateType: 'MM/DD/YYYY',
+            hourType: '24',
+            orientation: true,
+            el: '#start-date-picker',
+            toggleEl: '#show-start-date-picker',
+            inputEl: '#start-date',
+            type: 'DATEHOUR'
+        });
+
+        // Creates WindowDatePicker for end date
+        const endDatePicker = new WindowDatePicker({
+            dateType: 'MM/DD/YYYY',
+            hourType: '24',
+            orientation: true,
+            el: '#end-date-picker',
+            toggleEl: '#show-end-date-picker',
+            inputEl: '#end-date',
+            type: 'DATEHOUR'
         });
     });
 </script>
