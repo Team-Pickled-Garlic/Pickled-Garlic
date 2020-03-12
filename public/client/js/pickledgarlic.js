@@ -2,8 +2,8 @@ class ICalendarGenerator {
 
     constructor(title, date, timeStart, timeEnd, location) {
       this.title = title;
-      this.timeStart = moment(`${date} ${timeStart}`).utc().format("YYYYMMDDTHHmmss") + 'Z';
-      this.timeEnd = moment(`${date} ${timeEnd}`).utc().format("YYYYMMDDTHHmmss") + 'Z';
+      this.timeStart = moment(`${date} ${timeStart}`, 'MM-DD-YYYY HHmm').utc().format("YYYYMMDDTHHmmss") + 'Z';
+      this.timeEnd = moment(`${date} ${timeEnd}`, 'MM-DD-YYYY HHmm').utc().format("YYYYMMDDTHHmmss") + 'Z';
       this.location = location;
       this.created = moment().utc().format("YYYYMMDDTHHmmss") + 'Z';
       this.uid = this.generateUUID();
