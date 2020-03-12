@@ -181,8 +181,12 @@
         });
 
         // Prompts the user if they are sure they want to leave as leaving clears all event data
+        // Only prompts if at least one event was submitted
         window.onbeforeunload = function () {
-            return "Event data will be lost if you leave the page. Are you sure?"
+            if (events.length > 0) {
+                return "Event data will be lost. Are you sure?"
+            }
+            return;
         };
     });
 </script>
