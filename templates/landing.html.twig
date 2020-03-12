@@ -21,7 +21,7 @@
 
     <div class="row mt-2">
         <div class="col-md">
-            <table class="table table-striped data-table">
+            <table id="events-table" class="table table-striped">
                 <thead>
                     <th>Event Name</th>
                     <th>Start Date</th>
@@ -29,19 +29,13 @@
                     <th>Location</th>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>test</td>
-                        <td>test</td>
-                        <td>test</td>
-                        <td>test</td>
-                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <div class="modal fade" id="add-event-modal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="event-modal-title"
-        aria-hidden="true">
+    <div class="modal fade" id="add-event-modal" data-backdrop="static" tabindex="-1" role="dialog"
+        aria-labelledby="event-modal-title" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -53,8 +47,8 @@
                 <form id="event-form">
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>Event Title</label>
-                            <input required type="text" class="form-control" name="eventTitle" required>
+                            <label>Event Name</label>
+                            <input required type="text" class="form-control" name="eventName" required>
                         </div>
                         <div class="form-group">
                             <label>Date Start</label>
@@ -122,32 +116,46 @@
 
     // Does not let any user input in text field
     // Used to combine both readonly and required
-    $('.readonly').on('keydown paste', function(e){
+    $('.readonly').on('keydown paste', function (e) {
         e.preventDefault();
     });
 
+    // 'Placeholder' for ICalendar object
     var events = [];
 
     $(document).ready(function () {
         // Renders tables with class 'data-table' as a DataTable
-        var tables = $('.data-table').DataTable({
+        var eventTable = $('#events-table').DataTable({
             "dom": '<rt><"row"<"col"i><"col"p>>',
-            "lengthMenu": [[-1], ["All"]]
+            "lengthMenu": [[-1], ["All"]],
+            "language": {
+                "emptyTable": "No events added"
+            }
         });
 
         // When the create event form is submitted
-        $('#event-form').on('submit', function(e){
+        $('#event-form').on('submit', function (e) {
             e.preventDefault();
             let params = new URLSearchParams($(this).serialize());
-            let obj = {
-                "eventTitle": params.get('eventTitle'),
+            let event = {
+                "eventName": params.get('eventName'),
                 "startDate": params.get('startDate'),
                 "endDate": params.get('endDate').length > 0 ? params.get('endDate') : params.get('startDate'),
                 "eventLocation": params.get('eventLocation'),
                 "eventDesc": params.get('eventDesc')
             }
-            events.push(obj);
-            console.log(events);
+            events.push(event);
+
+            // Clear Form
+            $(this).trigger('reset');
+
+            // Push event data to event table
+            eventTable.row.add([
+                event.eventName,
+                event.startDate,
+                event.endDate,
+                event.eventLocation
+            ]).draw(false);
         });
 
         // Creates the WindowDatePicker for start date
