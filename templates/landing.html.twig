@@ -27,6 +27,7 @@
                     <th>Start Date</th>
                     <th>End Date</th>
                     <th>Location</th>
+					<th>Priority</th>
                 </thead>
                 <tbody>
                 </tbody>
@@ -83,6 +84,10 @@
                         <div class="form-group">
                             <label>Description</label>
                             <textarea class="form-control modal-event-desc" name="eventDesc"></textarea>
+                        </div>
+						<div class="form-group">
+                            <label>Priority</label>
+                            <textarea class="form-control modal-event-priority" name="eventPriority"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -152,7 +157,8 @@
                 "startDate": params.get('startDate'),
                 "endDate": params.get('endDate').length > 0 ? params.get('endDate') : params.get('startDate'),
                 "eventLocation": params.get('eventLocation'),
-                "eventDesc": params.get('eventDesc')
+                "eventDesc": params.get('eventDesc'),
+				"eventPriority": params.get('eventPriority')
             }
             events.push(event);
 
@@ -164,7 +170,8 @@
                 event.eventName,
                 event.startDate,
                 event.endDate,
-                event.eventLocation
+                event.eventLocation,
+				event.eventPriority
             ]).draw(false);
 
             // Enable the generate button if disabled, since there now exists an event to generate an iCal file 
@@ -214,7 +221,8 @@
                 '', 
                 events[0].startDate,
                 events[0].endDate,
-                events[0].eventLocation
+                events[0].eventLocation,
+				events[0].eventPriority
             );
             download('ical.ics', ical.generateCal());
         });

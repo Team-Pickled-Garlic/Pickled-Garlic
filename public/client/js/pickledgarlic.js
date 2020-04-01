@@ -1,12 +1,13 @@
 class ICalendarGenerator {
 
-    constructor(title, date, timeStart, timeEnd, location) {
+    constructor(title, date, timeStart, timeEnd, location, priority) {
       this.title = title;
       this.timeStart = moment(`${date} ${timeStart}`, 'MM-DD-YYYY HHmm').utc().format("YYYYMMDDTHHmmss") + 'Z';
       this.timeEnd = moment(`${date} ${timeEnd}`, 'MM-DD-YYYY HHmm').utc().format("YYYYMMDDTHHmmss") + 'Z';
       this.location = location;
       this.created = moment().utc().format("YYYYMMDDTHHmmss") + 'Z';
       this.uid = this.generateUUID();
+	  this.priority = priority;
     }
   
     generateUUID() {
@@ -32,6 +33,7 @@ class ICalendarGenerator {
         `DESCRIPTION:${this.title}`,
         `SUMMARY:${this.title}`,
         `LOCATION:${this.location}`,
+		`PRIORITY:${this.priority}`,
         `END:VEVENT`,
         `END:VCALENDAR`
       ].join('\n');
