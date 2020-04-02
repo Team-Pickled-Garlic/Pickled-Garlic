@@ -23,10 +23,23 @@ class ICalendarGenerator {
 		});
 	}
 
+	// Returns number of events
+	eventCount() {
+		return this.events.length;
+	}
+
+	// Removes newlines from string
+	removeNewlines(str) {
+		return str.replace(/[\r\n]+/gm, "");
+	}
+
 	// Generates contents of iCal file
 	generateCal(tzData) {
 		this.created = moment().utc().format("YYYYMMDDTHHmmss") + "Z";
 		tzData = tzData.split("\n");
+		tzData = tzData.filter(line => {
+			return line.length > 0;
+		});
 		let tzid = tzData[1].replace("TZID:", "");
 		let ical = [
 			`BEGIN:VCALENDAR`,
@@ -38,16 +51,16 @@ class ICalendarGenerator {
 		this.events.forEach(event => {
 			ical = ical.concat([
 				`BEGIN:VEVENT`,
-				`DTSTAMP:${this.created}`,
-				`UID:${this.generateUUID()}`
-				`DTSTART;TZID=${tzid}:${event.start}`
-				`DTEND;TZID=${tzid}:${event.end}`
-				`SUMMARY:${event.summary}`
-				`LOCATION:${event.location}`
+				`DTSTAMP:${this.created}`.trim(),
+				`UID:${this.generateUUID()}`,
+				this.removeNewlines(`DTSTART;TZID=${tzid}:${event.start}`),
+				this.removeNewlines(`DTEND;TZID=${tzid}:${event.end}`),
+				`SUMMARY:${event.summary}`.trim(),
+				`LOCATION:${event.location}`.trim(),
 				`END:VEVENT`
 			]);
 		});
-
-		return ical.push(`END:VCALENDAR`).join('\n');
+		ical.push(`END:VCALENDAR`);
+		return ical.join('\n');
 	}
 }
