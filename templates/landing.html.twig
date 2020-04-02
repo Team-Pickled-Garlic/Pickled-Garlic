@@ -11,11 +11,90 @@
     </div>
 
     <div class="row">
-        <div class="col">
+        <div class="col-9">
             <button type="button" class="btn btn-sm btn-info" onclick="" title="Add event" data-toggle="modal"
                 data-target="#add-event-modal">+ Add Event</button>
             <button id="generate-button" type="button" class="btn btn-sm btn-outline-primary "
-                title="Add events before generating" disabled>Generate .ics</button>
+                title="Add events and select timezone before generating" disabled>Generate .ics</button>
+        </div>
+        <div class="col-3">
+            <select class="custom-select mr-sm-2" id="tz-select">
+                <option value="0" selected>Select Timezone</option>
+                <option value="Etc/GMT+12">-12:00 Etc/GMT+12</option>
+                <option value="Pacific/Pago_Pago">-11:00 Pacific/Pago_Pago</option>
+                <option value="America/Adak">-11:00 America/Adak (DST)</option>
+                <option value="Pacific/Honolulu">-10:00 Hawaii Time</option>
+                <option value="Pacific/Marquesas">-09:30 Pacific/Marquesas</option>
+                <option value="Pacific/Gambier">-09:00 Pacific/Gambier</option>
+                <option value="America/Anchorage">-09:00 Alaska Time (DST)</option>
+                <option value="America/Los_Angeles">-08:00 Pacific Time (DST)</option>
+                <option value="Pacific/Pitcairn">-08:00 Pacific/Pitcairn</option>
+                <option value="America/Phoenix">-07:00 Mountain Time - Arizona</option>
+                <option value="America/Denver">-07:00 Mountain Time (DST)</option>
+                <option value="America/Guatemala">-06:00 America/Guatemala</option>
+                <option value="America/Chicago">-06:00 Central Time (DST)</option>
+                <option value="Pacific/Easter">-06:00 Pacific/Easter (DST)</option>
+                <option value="America/Bogota">-05:00 America/Bogota</option>
+                <option value="America/New_York">-05:00 Eastern Time (DST)</option>
+                <option value="America/Caracas">-04:30 America/Caracas</option>
+                <option value="America/Halifax">-04:00 America/Halifax (DST)</option>
+                <option value="America/Santo_Domingo">-04:00 America/Santo_Domingo</option>
+                <option value="America/Asuncion">-04:00 America/Asuncion (DST)</option>
+                <option value="America/Cuiaba">-04:00 America/Cuiaba (DST)</option>
+                <option value="America/St_Johns">-03:30 America/St_Johns (DST)</option>
+                <option value="America/Godthab">-03:00 America/Godthab (DST)</option>
+                <option value="America/Argentina/Buenos_Aires">-03:00 America/Argentina/Buenos_Aires</option>
+                <option value="America/Montevideo">-03:00 America/Montevideo (DST)</option>
+                <option value="America/Sao_Paulo">-03:00 America/Sao_Paulo (DST)</option>
+                <option value="America/Noronha">-02:00 America/Noronha</option>
+                <option value="Etc/GMT+2">-02:00 Etc/GMT+2 (DST)</option>
+                <option value="Atlantic/Azores">-01:00 Atlantic/Azores (DST)</option>
+                <option value="Atlantic/Cape_Verde">-01:00 Atlantic/Cape_Verde</option>
+                <option value="Etc/UTC">00:00 Etc/UTC</option>
+                <option value="Europe/London">00:00 Europe/London (DST)</option>
+                <option value="Europe/Berlin">+01:00 Europe/Berlin (DST)</option>
+                <option value="Africa/Lagos">+01:00 Africa/Lagos</option>
+                <option value="Africa/Windhoek">+01:00 Africa/Windhoek (DST)</option>
+                <option value="Asia/Beirut">+02:00 Asia/Beirut (DST)</option>
+                <option value="Africa/Johannesburg">+02:00 Africa/Johannesburg</option>
+                <option value="Europe/Moscow">+03:00 Europe/Moscow (DST)</option>
+                <option value="Asia/Baghdad">+03:00 Asia/Baghdad</option>
+                <option value="Asia/Tehran">+03:30 Asia/Tehran (DST)</option>
+                <option value="Asia/Dubai">+04:00 Asia/Dubai</option>
+                <option value="Asia/Yerevan">+04:00 Asia/Yerevan (DST)</option>
+                <option value="Asia/Kabul">+04:30 Asia/Kabul</option>
+                <option value="Asia/Yekaterinburg">+05:00 Asia/Yekaterinburg (DST)</option>
+                <option value="Asia/Karachi">+05:00 Asia/Karachi</option>
+                <option value="Asia/Calcutta">+05:30 Asia/Kolkata</option>
+                <option value="Asia/Katmandu">+05:45 Asia/Kathmandu</option>
+                <option value="Asia/Dhaka">+06:00 Asia/Dhaka</option>
+                <option value="Asia/Omsk">+06:00 Asia/Omsk (DST)</option>
+                <option value="Asia/Rangoon">+06:30 Asia/Rangoon</option>
+                <option value="Asia/Krasnoyarsk">+07:00 Asia/Krasnoyarsk (DST)</option>
+                <option value="Asia/Jakarta">+07:00 Asia/Jakarta</option>
+                <option value="Asia/Shanghai">+08:00 Asia/Shanghai</option>
+                <option value="Asia/Singapore">+08:00 Asia/Singapore</option>
+                <option value="Australia/Perth">+08:00 Australia/Perth</option>
+                <option value="Asia/Irkutsk">+08:00 Asia/Irkutsk (DST)</option>
+                <option value="Australia/Eucla">+08:45 Australia/Eucla</option>
+                <option value="Asia/Yakutsk">+09:00 Asia/Yakutsk (DST)</option>
+                <option value="Asia/Tokyo">+09:00 Japan, Korea</option>
+                <option value="Australia/Darwin">+09:30 Australia/Darwin</option>
+                <option value="Australia/Adelaide">+09:30 Australia/Adelaide (DST)</option>
+                <option value="Australia/Brisbane">+10:00 Australia/Brisbane</option>
+                <option value="Asia/Vladivostok">+10:00 Asia/Vladivostok (DST)</option>
+                <option value="Australia/Sydney">+10:00 Australia/Sydney (DST)</option>
+                <option value="Australia/Lord_Howe">+10:30 Australia/Lord_Howe (DST)</option>
+                <option value="Asia/Kamchatka">+11:00 Asia/Kamchatka (DST)</option>
+                <option value="Pacific/Noumea">+11:00 Pacific/Noumea</option>
+                <option value="Pacific/Norfolk">+11:30 Pacific/Norfolk</option>
+                <option value="Pacific/Auckland">+12:00 Pacific/Auckland (DST)</option>
+                <option value="Pacific/Tarawa">+12:00 Pacific/Tarawa</option>
+                <option value="Pacific/Chatham">+12:45 Pacific/Chatham (DST)</option>
+                <option value="Pacific/Tongatapu">+13:00 Pacific/Tongatapu</option>
+                <option value="Pacific/Apia">+13:00 Pacific/Apia (DST)</option>
+                <option value="Pacific/Kiritimati">+14:00 Pacific/Kiritimati</option>
+            </select>
         </div>
     </div>
 
@@ -100,7 +179,7 @@
     function substituteClass(elem, target, replace) {
         $(elem).removeClass(target);
         $(elem).addClass(replace);
-    } 
+    }
 
     let download = (filename, text) => {
         var element = document.createElement('a');
@@ -115,24 +194,25 @@
         document.body.removeChild(element);
     }
 
-    let downloadTest = () => {
-        let testEvent = new ICalendarGenerator('Study for Exam', '03-13-2020', '10:00:00', '13:00:00', 'Hamilton Library');
-        download('test.ics', testEvent.generateCal());
-    }
-
     // Does not let any user input in text field
     // Used to combine both readonly and required
     $('.readonly').on('keydown paste', function (e) {
         e.preventDefault();
     });
 
-    // 'Placeholder' for ICalendar object
-    var events = [];
+    // Timezone data
+    var tzData = "";
+
+    // iCalendar Object
+    var ical = new ICalendarGenerator();
 
     $(document).ready(function () {
         // Sets the "Generate .ics" button to disabled
         // Prevents page refreshing from saving the state of the button if previously enabled
         $('#generate-button').prop('disabled', true);
+
+        // Gets ical VTIMEZONE data incase it is pre-filled
+        generateTzData();
 
         // Renders tables with class 'data-table' as a DataTable
         var eventTable = $('#events-table').DataTable({
@@ -147,32 +227,32 @@
         $('#event-form').on('submit', function (e) {
             e.preventDefault();
             let params = new URLSearchParams($(this).serialize());
-            let event = {
-                "eventName": params.get('eventName'),
-                "startDate": params.get('startDate'),
-                "endDate": params.get('endDate').length > 0 ? params.get('endDate') : params.get('startDate'),
-                "eventLocation": params.get('eventLocation'),
-                "eventDesc": params.get('eventDesc')
-            }
-            events.push(event);
+            let eventName = params.get('eventName');
+            let location = params.get('eventLocation');
+            let startDate = params.get('startDate');
+            let endDate = params.get('endDate');
+
+            ical.addEvent(
+                eventName,
+                location,
+                startDate,
+                endDate
+            );
 
             // Clear Form
             $(this).trigger('reset');
 
             // Push event data to event table
             eventTable.row.add([
-                event.eventName,
-                event.startDate,
-                event.endDate,
-                event.eventLocation
+                eventName,
+                startDate,
+                endDate,
+                location
             ]).draw(false);
 
             // Enable the generate button if disabled, since there now exists an event to generate an iCal file 
-            if ($('#generate-button').prop('disabled')) {
-                $('#generate-button').removeAttr('disabled');
-                // Switches the button from outlined to filled in
-                substituteClass('#generate-button', 'btn-outline-primary', 'btn-primary');
-                $('#generate-button').prop('title', 'Click to generate .ics file');
+            if ($('#generate-button').prop('disabled') && $('#tz-select').val() != 0) {
+                enableGenerate();
             }
         });
 
@@ -201,23 +281,64 @@
         // Prompts the user if they are sure they want to leave as leaving clears all event data
         // Only prompts if at least one event was submitted
         window.onbeforeunload = function () {
-            if (events.length > 0) {
+            if (ical.eventCount() > 0) {
                 return "Event data will be lost. Are you sure?"
             }
             return;
         };
 
-        // TODO: Make this work for all events once pickledgarlic.js is reworked to support multiple events
-        $('#generate-button').on('click', function(e) {
-            let ical = new ICalendarGenerator(
-                events[0].eventName,
-                '', 
-                events[0].startDate,
-                events[0].endDate,
-                events[0].eventLocation
-            );
-            download('ical.ics', ical.generateCal());
+        // Disables "Generate .ics" button if a timezone is not selected
+        $('#tz-select').change(function() {
+            let tz = $(this).val();
+            generateTzData();
+            if (tz != 0 && ical.eventCount() > 0) {
+                enableGenerate();
+            } else {
+                disableGenerate();
+            }
         });
+
+        // Generates .ics file contents and allows it to be downloaded
+        $('#generate-button').on('click', function (e) {
+            download('ical.ics', ical.generateCal(tzData));
+        });
+
+        // Disables "Generate .ics" button
+        function disableGenerate() {
+            $('#generate-button').prop('disabled', true);
+            substituteClass('#generate-button', 'btn-primary', 'btn-outline-primary');
+            $('#generate-button').prop('title', 'Add events and select timezone before generating');
+        }
+
+        // Allows "Generate .ics" button to be clicked
+        function enableGenerate() {
+            $('#generate-button').removeAttr('disabled');
+            // Switches the button from outlined to filled in
+            substituteClass('#generate-button', 'btn-outline-primary', 'btn-primary');
+            $('#generate-button').prop('title', 'Click to generate .ics file');
+        }
+
+        // Fetches iCal VTIMEZONE data from server
+        function generateTzData() {
+            let tz = $('#tz-select').val();
+            if (tz != 0) {
+                let http = new XMLHttpRequest();
+                let url = `timezone.php?tz=${tz}`;
+                
+                http.open('GET', url);
+                http.send();
+        
+                http.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        // Sets appropriate tzData
+                        tzData = http.responseText;
+                    }
+                }
+            } else {
+                // Blanks tzData when "Select Timezone" option is active
+                tzData = "";       
+            }
+        }
     });
 </script>
 {% endblock content%}
