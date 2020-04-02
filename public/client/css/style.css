@@ -43,3 +43,7 @@ h4 {
 .inherit-height {
   height: inherit;
 }
+
+.invalid {
+  background-color: #fdd; 
+}
