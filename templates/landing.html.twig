@@ -143,7 +143,7 @@
                                 <label>Priority</label>
                                 <select name="eventPrio" id="event-prio" class="form-control">
                                     <option value="0" selected>0 (default)</option>
-                                    <option value="1">1</option>
+                                    <option value="1">1 (highest)</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
                                     <option value="4">4</option>
@@ -151,7 +151,7 @@
                                     <option value="6">6</option>
                                     <option value="7">7</option>
                                     <option value="8">8</option>
-                                    <option value="9">9</option>
+                                    <option value="9">9 (lowest)</option>
                                 </select>
                             </div>
                         </div>
@@ -295,6 +295,8 @@
             let location = params.get('eventLocation');
             let startDate = params.get('startDate');
             let endDate = params.get('endDate');
+            let classification = params.get('eventClass');
+            let priority = params.get('eventPrio');
 
             if (eventName.trim().length == 0) {
                 // If event name is not filled in 
@@ -338,7 +340,9 @@
                     eventName,
                     location,
                     startDate,
-                    endDate
+                    endDate,
+                    classification,
+                    priority
                 );
 
                 // Clear Form
