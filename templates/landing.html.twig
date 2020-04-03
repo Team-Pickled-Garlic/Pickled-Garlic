@@ -197,6 +197,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <button id="form-reset-button" type="button" class="btn btn-light">Reset</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Add Event</button>
                     </div>
@@ -417,6 +418,12 @@
         // Generates .ics file contents and allows it to be downloaded
         $('#generate-button').on('click', function (e) {
             download('ical.ics', ical.generateCal(tzData));
+        });
+
+        // Resets form on button click
+        $('#form-reset-button').on('click', function(e){
+            clearInvalid();
+            $('#event-form').trigger('reset');
         });
 
         // Disables "Generate .ics" button
