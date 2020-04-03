@@ -123,14 +123,16 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form id="event-form">
+                <form id="event-form" novalidate>
                     <div class="modal-body">
                         <div class="form-group">
                             <label>Event Name</label>
-                            <input required type="text" class="form-control" name="eventName" required>
+                            <span id="event-name-err" class="collapse error-msg"></span>
+                            <input required id="event-name" type="text" class="form-control" name="eventName" required>
                         </div>
                         <div class="form-group">
                             <label>Date Start</label>
+                            <span id="start-date-err" class="collapse error-msg"></span>
                             <div class="input-group">
                                 <input id="start-date" type="text" class="form-control readonly inherit-height"
                                     name="startDate" required>
@@ -144,8 +146,9 @@
                         </div>
                         <div class="form-group">
                             <label>Date End</label>
+                            <span id="end-date-err" class="collapse error-msg"></span>
                             <div class="input-group">
-                                <input id="end-date" type="text" class="form-control readonly inherit-height"
+                                <input required id="end-date" type="text" class="form-control readonly inherit-height"
                                     name="endDate">
                                 <div class="input-group-append">
                                     <button id="show-end-date-picker" class="btn btn-secondary" type="button">
@@ -157,7 +160,8 @@
                         </div>
                         <div class="form-group">
                             <label>Location</label>
-                            <input type="text" class="form-control" name="eventLocation">
+                            <span id="event-location-err" class="collapse error-msg"></span>
+                            <input required id="event-location" type="text" class="form-control" name="eventLocation">
                         </div>
                         <div class="form-group">
                             <label>Description</label>
@@ -175,22 +179,52 @@
 
 </div>
 <script>
+    const validatedFields = ['#event-name', '#start-date', '#end-date', '#event-location'];
+
     // Within elem, remove class target and add class replace
     function substituteClass(elem, target, replace) {
         $(elem).removeClass(target);
         $(elem).addClass(replace);
     }
 
+    // Marks form field invalid and displays an error message
+    function markInvalid(fieldName, msg) {
+        $(fieldName).addClass('invalid');
+        $(`${fieldName}-err`).html(msg);
+        $(`${fieldName}-err`).show();
+    }
+
+    // Removes invalid styling on form field
+    function markValid(fieldName) {
+        $(fieldName).removeClass('invalid');
+        $(`${fieldName}-err`).hide();
+    }
+
+    // Removes invalid styling from all form fields
+    function clearInvalid() {
+        validatedFields.forEach(field => {
+            markValid(field);
+        });
+    }
+
+    // Checks if all fields are valid
+    function allValid() {
+        let valid = true;
+        validatedFields.forEach(field => {
+            if ($(field).attr('class').includes('invalid')) {
+                valid = false;
+            }
+        });
+        return valid;
+    }
+
     let download = (filename, text) => {
         var element = document.createElement('a');
         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
         element.setAttribute('download', filename);
-
         element.style.display = 'none';
         document.body.appendChild(element);
-
         element.click();
-
         document.body.removeChild(element);
     }
 
@@ -206,12 +240,14 @@
     // iCalendar Object
     var ical = new ICalendarGenerator();
 
+    var startDatePicker = "";
+
     $(document).ready(function () {
         // Sets the "Generate .ics" button to disabled
         // Prevents page refreshing from saving the state of the button if previously enabled
         $('#generate-button').prop('disabled', true);
 
-        // Gets ical VTIMEZONE data incase it is pre-filled
+        // Gets ical VTIMEZONE data incase it the dropdown pre-filled from previous visit
         generateTzData();
 
         // Renders tables with class 'data-table' as a DataTable
@@ -226,41 +262,81 @@
         // When the create event form is submitted
         $('#event-form').on('submit', function (e) {
             e.preventDefault();
+            clearInvalid();
             let params = new URLSearchParams($(this).serialize());
             let eventName = params.get('eventName');
             let location = params.get('eventLocation');
             let startDate = params.get('startDate');
             let endDate = params.get('endDate');
 
-            ical.addEvent(
-                eventName,
-                location,
-                startDate,
-                endDate
-            );
+            if (eventName.trim().length == 0) {
+                // If event name is not filled in 
+                markInvalid('#event-name', 'required');
+            } else if (eventName.length > 40) {
+                // If event name too long
+                markInvalid('#event-name', 'must be less than 40 characters');
+            } else if (eventName.match(/[@#$%^*`;]/g) != null) {
+                // If event name contains specified special characters
+                markInvalid('#event-name', 'should not contain @ # $ % ^ & * ` ;');
+            }
 
-            // Clear Form
-            $(this).trigger('reset');
+            if (location.trim().length == 0) {
+                // If event location is not filled in 
+                markInvalid('#event-location', 'required');
+            } else if (location.length > 50) {
+                // If event length too long
+                markInvalid('#event-location', 'must be less than 50 characters');
+            } else if (location.match(/[@#$%^*`;]/g) != null) {
+                // If event location contains specified special characters
+                markInvalid('#event-location', 'should not contain @ # $ % ^ & * ` ;');
+            }
 
-            // Push event data to event table
-            eventTable.row.add([
-                eventName,
-                startDate,
-                endDate,
-                location
-            ]).draw(false);
+            if (startDate.length == 0) {
+                markInvalid('#start-date', 'required');
+            } else if (moment(startDate, "MM-DD-YYYY HH:mm") < moment()) {
+                // If start date is an event in the past
+                markInvalid('#start-date', 'date/time should not be in the past');
+            }
 
-            // Enable the generate button if disabled, since there now exists an event to generate an iCal file 
-            if ($('#generate-button').prop('disabled') && $('#tz-select').val() != 0) {
-                enableGenerate();
+            if (endDate.length == 0) {
+                markInvalid('#end-date', 'required');
+            } else if (moment(startDate, "MM-DD-YYYY HH:mm") > moment(endDate, "MM-DD-YYYY HH:mm")) {
+                // If start date begins after end date
+                markInvalid('#end-date', 'date/time should be after start date');
+            } 
+
+            // If all necessary form fields are valid
+            if (allValid()) {
+                ical.addEvent(
+                    eventName,
+                    location,
+                    startDate,
+                    endDate
+                );
+
+                // Clear Form
+                $(this).trigger('reset');
+
+                // Push event data to event table
+                eventTable.row.add([
+                    eventName,
+                    startDate,
+                    endDate,
+                    location
+                ]).draw(false);
+
+                // Enable the generate button if disabled, since there now exists an event to generate an iCal file 
+                if ($('#generate-button').prop('disabled') && $('#tz-select').val() != 0) {
+                    enableGenerate();
+                }
             }
         });
 
         // Creates the WindowDatePicker for start date
-        const startDatePicker = new WindowDatePicker({
+        startDatePicker = new WindowDatePicker({
             dateType: 'MM/DD/YYYY',
             hourType: '24',
-            orientation: true,
+            orientation: false,
             el: '#start-date-picker',
             toggleEl: '#show-start-date-picker',
             inputEl: '#start-date',
@@ -271,11 +347,20 @@
         const endDatePicker = new WindowDatePicker({
             dateType: 'MM/DD/YYYY',
             hourType: '24',
-            orientation: true,
+            orientation: false,
             el: '#end-date-picker',
             toggleEl: '#show-end-date-picker',
             inputEl: '#end-date',
             type: 'DATEHOUR'
+        });
+
+        // If end date/time is not yet selected at the time of selecting a start date/time,
+        // the end date is auto-filled to be the same as the start date/time 
+        startDatePicker.el.addEventListener('wdp.close', () => {
+            if (endDatePicker.get().value == "" && startDatePicker.get().value != "") {
+                let date = startDatePicker.get();
+                endDatePicker.set(`${date.month}/${date.day + 1}/${date.year} ${date.hour}:${date.minute}`);
+            }
         });
 
         // Prompts the user if they are sure they want to leave as leaving clears all event data
@@ -288,7 +373,7 @@
         };
 
         // Disables "Generate .ics" button if a timezone is not selected
-        $('#tz-select').change(function() {
+        $('#tz-select').change(function () {
             let tz = $(this).val();
             generateTzData();
             if (tz != 0 && ical.eventCount() > 0) {
@@ -324,10 +409,10 @@
             if (tz != 0) {
                 let http = new XMLHttpRequest();
                 let url = `timezone.php?tz=${tz}`;
-                
+
                 http.open('GET', url);
                 http.send();
-        
+
                 http.onreadystatechange = function () {
                     if (this.readyState == 4 && this.status == 200) {
                         // Sets appropriate tzData
@@ -336,7 +421,7 @@
                 }
             } else {
                 // Blanks tzData when "Select Timezone" option is active
-                tzData = "";       
+                tzData = "";
             }
         }
     });
