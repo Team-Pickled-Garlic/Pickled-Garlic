@@ -47,3 +47,7 @@ h4 {
 .invalid {
   background-color: #fdd; 
 }
+
+.error-msg {
+  color: red;
+}
