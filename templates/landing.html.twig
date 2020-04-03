@@ -362,29 +362,28 @@
             }
         });
 
-        // Creates the WindowDatePicker for start date
-        const startDatePicker = new WindowDatePicker({
+        // Window Date Picker configuration
+        let wdpConfig = {
             dateType: 'MM/DD/YYYY',
             hourType: '24',
             orientation: false,
             inputToggle: true,
+            type: 'DATEHOUR'
+        };
+        
+        // Creates the WindowDatePicker for start date
+        const startDatePicker = new WindowDatePicker(Object.assign(wdpConfig, {
             el: '#start-date-picker',
             toggleEl: '#show-start-date-picker',
             inputEl: '#start-date',
-            type: 'DATEHOUR'
-        });
+        }));
 
         // Creates WindowDatePicker for end date
-        const endDatePicker = new WindowDatePicker({
-            dateType: 'MM/DD/YYYY',
-            hourType: '24',
-            orientation: false,
-            inputToggle: true,
+        const endDatePicker = new WindowDatePicker(Object.assign(wdpConfig, {
             el: '#end-date-picker',
             toggleEl: '#show-end-date-picker',
             inputEl: '#end-date',
-            type: 'DATEHOUR'
-        });
+        }));
 
         // If end date/time is not yet selected at the time of selecting a start date/time,
         // the end date is auto-filled to be the same as the start date/time 
