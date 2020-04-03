@@ -14,14 +14,15 @@ class ICalendarGenerator {
 	}
 
 	// Adds event to iCal object
-	addEvent(summary, location, start, end, classification, priority) {
+	addEvent(summary, location, start, end, classification, priority, resources) {
 		this.events.push({
 			"summary": summary,
 			"location": location,
 			"start": moment(start, "MM-DD-YYYY HH:mm").format("YYYYMMDDTHHmmss"),
 			"end": moment(end, "MM-DD-YYYY HH:mm").format("YYYYMMDDTHHmmss"),
 			"classification": classification,
-			"priority": priority
+			"priority": priority,
+			"resources": resources.trim().replace(/(, )/g, ",")
 		});
 	}
 
@@ -39,9 +40,6 @@ class ICalendarGenerator {
 	generateCal(tzData) {
 		this.created = moment().utc().format("YYYYMMDDTHHmmss") + "Z";
 		tzData = tzData.split("\n");
-		tzData = tzData.filter(line => {
-			return line.length > 0;
-		});
 		let tzid = tzData[1].replace("TZID:", "");
 		let ical = [
 			`BEGIN:VCALENDAR`,
@@ -61,10 +59,15 @@ class ICalendarGenerator {
 				`SUMMARY:${event.summary}`.trim(),
 				`PRIORITY:${event.priority}`,
 				`LOCATION:${event.location}`.trim(),
+				event.resources.length > 0 ? `RESOURCES:${event.resources}` : ``,
 				`END:VEVENT`
 			]);
 		});
 		ical.push(`END:VCALENDAR`);
+		// Removes empty lines
+		ical = ical.filter(line => {
+			return line.length > 0;
+		});
 		return ical.join('\n');
 	}
 }

@@ -163,7 +163,8 @@
                                     <input id="start-date" type="text" class="form-control readonly inherit-height"
                                         name="startDate" autocomplete="off">
                                     <div class="input-group-append">
-                                        <button id="show-start-date-picker" class="btn btn-light border-grey" type="button">
+                                        <button id="show-start-date-picker" class="btn btn-light border-grey"
+                                            type="button">
                                             <img src="/assets/icons8-calendar-24.png">
                                         </button>
                                     </div>
@@ -177,7 +178,8 @@
                                     <input id="end-date" type="text" class="form-control readonly inherit-height"
                                         name="endDate" autocomplete="off">
                                     <div class="input-group-append">
-                                        <button id="show-end-date-picker" class="btn btn-light border-grey" type="button">
+                                        <button id="show-end-date-picker" class="btn btn-light border-grey"
+                                            type="button">
                                             <img src="/assets/icons8-calendar-24.png">
                                         </button>
                                     </div>
@@ -192,8 +194,9 @@
                                 autocomplete="off">
                         </div>
                         <div class="form-group">
-                            <label>Description</label>
-                            <textarea class="form-control modal-event-desc" name="eventDesc"></textarea>
+                            <label>Resources (Optional)</label>
+                            <input id="event-resources" type="text" class="form-control" name="eventResources"
+                                autocomplete="off" placeholder="e.g. Pen, paper, etc."/>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -297,6 +300,7 @@
             let endDate = params.get('endDate');
             let classification = params.get('eventClass');
             let priority = params.get('eventPrio');
+            let resources = params.get('eventResources');
 
             if (eventName.trim().length == 0) {
                 // If event name is not filled in 
@@ -342,7 +346,8 @@
                     startDate,
                     endDate,
                     classification,
-                    priority
+                    priority,
+                    resources
                 );
 
                 // Clear Form
@@ -371,7 +376,7 @@
             inputToggle: true,
             type: 'DATEHOUR'
         };
-        
+
         // Creates the WindowDatePicker for start date
         const startDatePicker = new WindowDatePicker(Object.assign(wdpConfig, {
             el: '#start-date-picker',
@@ -421,7 +426,7 @@
         });
 
         // Resets form on button click
-        $('#form-reset-button').on('click', function(e){
+        $('#form-reset-button').on('click', function (e) {
             clearInvalid();
             $('#event-form').trigger('reset');
         });
