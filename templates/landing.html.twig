@@ -268,8 +268,6 @@
     // iCalendar Object
     var ical = new ICalendarGenerator();
 
-    var startDatePicker = "";
-
     $(document).ready(function () {
         // Sets the "Generate .ics" button to disabled
         // Prevents page refreshing from saving the state of the button if previously enabled
@@ -365,10 +363,11 @@
         });
 
         // Creates the WindowDatePicker for start date
-        startDatePicker = new WindowDatePicker({
+        const startDatePicker = new WindowDatePicker({
             dateType: 'MM/DD/YYYY',
             hourType: '24',
             orientation: false,
+            inputToggle: true,
             el: '#start-date-picker',
             toggleEl: '#show-start-date-picker',
             inputEl: '#start-date',
@@ -380,6 +379,7 @@
             dateType: 'MM/DD/YYYY',
             hourType: '24',
             orientation: false,
+            inputToggle: true,
             el: '#end-date-picker',
             toggleEl: '#show-end-date-picker',
             inputEl: '#end-date',
