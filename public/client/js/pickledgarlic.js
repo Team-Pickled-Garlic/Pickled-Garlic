@@ -14,12 +14,14 @@ class ICalendarGenerator {
 	}
 
 	// Adds event to iCal object
-	addEvent(summary, location, start, end) {
+	addEvent(summary, location, start, end, classification, priority) {
 		this.events.push({
 			"summary": summary,
 			"location": location,
 			"start": moment(start, "MM-DD-YYYY HH:mm").format("YYYYMMDDTHHmmss"),
-			"end": moment(end, "MM-DD-YYYY HH:mm").format("YYYYMMDDTHHmmss")
+			"end": moment(end, "MM-DD-YYYY HH:mm").format("YYYYMMDDTHHmmss"),
+			"classification": classification,
+			"priority": priority
 		});
 	}
 
@@ -55,7 +57,9 @@ class ICalendarGenerator {
 				`UID:${this.generateUUID()}`,
 				this.removeNewlines(`DTSTART;TZID=${tzid}:${event.start}`),
 				this.removeNewlines(`DTEND;TZID=${tzid}:${event.end}`),
+				`CLASS:${event.classification}`,
 				`SUMMARY:${event.summary}`.trim(),
+				`PRIORITY:${event.priority}`,
 				`LOCATION:${event.location}`.trim(),
 				`END:VEVENT`
 			]);
