@@ -113,9 +113,9 @@
         </div>
     </div>
 
-    <div class="modal fade" id="add-event-modal" data-backdrop="static" tabindex="-1" role="dialog"
+    <div class="modal fade bd-example-modal-lg" id="add-event-modal" data-backdrop="static" tabindex="-1" role="dialog"
         aria-labelledby="event-modal-title" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="event-modal-title">Create Event</h5>
@@ -130,33 +130,60 @@
                             <span id="event-name-err" class="collapse error-msg"></span>
                             <input required id="event-name" type="text" class="form-control" name="eventName" required>
                         </div>
-                        <div class="form-group">
-                            <label>Date Start</label>
-                            <span id="start-date-err" class="collapse error-msg"></span>
-                            <div class="input-group">
-                                <input id="start-date" type="text" class="form-control readonly inherit-height"
-                                    name="startDate" required>
-                                <div class="input-group-append">
-                                    <button id="show-start-date-picker" class="btn btn-secondary" type="button">
-                                        <img src="/assets/icons8-calendar-24.png">
-                                    </button>
-                                </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label>Classification</label>
+                                <select name="eventClass" id="event-class" class="form-control">
+                                    <option value="public" selected>Public (default)</option>
+                                    <option value="private">Private</option>
+                                    <option value="confidential">Confidential</option>
+                                </select>
                             </div>
-                            <div id="start-date-picker"></div>
+                            <div class="form-group col-md-2">
+                                <label>Priority</label>
+                                <select name="eventPrio" id="event-prio" class="form-control">
+                                    <option value="0" selected>0 (default)</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Date End</label>
-                            <span id="end-date-err" class="collapse error-msg"></span>
-                            <div class="input-group">
-                                <input required id="end-date" type="text" class="form-control readonly inherit-height"
-                                    name="endDate">
-                                <div class="input-group-append">
-                                    <button id="show-end-date-picker" class="btn btn-secondary" type="button">
-                                        <img src="/assets/icons8-calendar-24.png">
-                                    </button>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Date Start</label>
+                                <span id="start-date-err" class="collapse error-msg"></span>
+                                <div class="input-group">
+                                    <input id="start-date" type="text" class="form-control readonly inherit-height"
+                                        name="startDate" required>
+                                    <div class="input-group-append">
+                                        <button id="show-start-date-picker" class="btn btn-secondary" type="button">
+                                            <img src="/assets/icons8-calendar-24.png">
+                                        </button>
+                                    </div>
                                 </div>
+                                <div id="start-date-picker"></div>
                             </div>
-                            <div id="end-date-picker"></div>
+                            <div class="form-group col-md-6">
+                                <label>Date End</label>
+                                <span id="end-date-err" class="collapse error-msg"></span>
+                                <div class="input-group">
+                                    <input required id="end-date" type="text" class="form-control readonly inherit-height"
+                                        name="endDate">
+                                    <div class="input-group-append">
+                                        <button id="show-end-date-picker" class="btn btn-secondary" type="button">
+                                            <img src="/assets/icons8-calendar-24.png">
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="end-date-picker"></div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Location</label>
