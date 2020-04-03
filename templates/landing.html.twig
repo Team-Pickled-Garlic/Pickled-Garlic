@@ -128,7 +128,7 @@
                         <div class="form-group">
                             <label>Event Name</label>
                             <span id="event-name-err" class="collapse error-msg"></span>
-                            <input required id="event-name" type="text" class="form-control" name="eventName" required>
+                            <input id="event-name" type="text" class="form-control" name="eventName" autocomplete="off">
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-4">
@@ -161,7 +161,7 @@
                                 <span id="start-date-err" class="collapse error-msg"></span>
                                 <div class="input-group">
                                     <input id="start-date" type="text" class="form-control readonly inherit-height"
-                                        name="startDate" required>
+                                        name="startDate" autocomplete="off">
                                     <div class="input-group-append">
                                         <button id="show-start-date-picker" class="btn btn-secondary" type="button">
                                             <img src="/assets/icons8-calendar-24.png">
@@ -174,8 +174,8 @@
                                 <label>Date End</label>
                                 <span id="end-date-err" class="collapse error-msg"></span>
                                 <div class="input-group">
-                                    <input required id="end-date" type="text" class="form-control readonly inherit-height"
-                                        name="endDate">
+                                    <input id="end-date" type="text" class="form-control readonly inherit-height"
+                                        name="endDate" autocomplete="off">
                                     <div class="input-group-append">
                                         <button id="show-end-date-picker" class="btn btn-secondary" type="button">
                                             <img src="/assets/icons8-calendar-24.png">
@@ -188,7 +188,8 @@
                         <div class="form-group">
                             <label>Location</label>
                             <span id="event-location-err" class="collapse error-msg"></span>
-                            <input required id="event-location" type="text" class="form-control" name="eventLocation">
+                            <input id="event-location" type="text" class="form-control" name="eventLocation"
+                                autocomplete="off">
                         </div>
                         <div class="form-group">
                             <label>Description</label>
@@ -332,7 +333,7 @@
             } else if (moment(startDate, "MM-DD-YYYY HH:mm") > moment(endDate, "MM-DD-YYYY HH:mm")) {
                 // If start date begins after end date
                 markInvalid('#end-date', 'date/time should be after start date');
-            } 
+            }
 
             // If all necessary form fields are valid
             if (allValid()) {
