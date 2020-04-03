@@ -300,9 +300,9 @@
             if (eventName.trim().length == 0) {
                 // If event name is not filled in 
                 markInvalid('#event-name', 'required');
-            } else if (eventName.length > 40) {
+            } else if (eventName.length > 50) {
                 // If event name too long
-                markInvalid('#event-name', 'must be less than 40 characters');
+                markInvalid('#event-name', 'must be less than 50 characters');
             } else if (eventName.match(/[@#$%^*`;]/g) != null) {
                 // If event name contains specified special characters
                 markInvalid('#event-name', 'should not contain @ # $ % ^ & * ` ;');
