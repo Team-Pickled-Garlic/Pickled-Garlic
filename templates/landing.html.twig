@@ -154,6 +154,10 @@
                                     <option value="9">9 (lowest)</option>
                                 </select>
                             </div>
+							<div class="form-group">
+								<label>RSVP</label>
+								<input id="event-rsvp" type="checkbox" class="form-control" name="eventRsvp">
+							</div>						
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
@@ -301,6 +305,7 @@
             let classification = params.get('eventClass');
             let priority = params.get('eventPrio');
             let resources = params.get('eventResources');
+			let rsvp = params.get('eventRsvp');
 
             if (eventName.trim().length == 0) {
                 // If event name is not filled in 
@@ -347,7 +352,8 @@
                     endDate,
                     classification,
                     priority,
-                    resources
+                    resources,
+					rsvp
                 );
 
                 // Clear Form

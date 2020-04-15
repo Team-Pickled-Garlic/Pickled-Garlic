@@ -14,7 +14,11 @@ class ICalendarGenerator {
 	}
 
 	// Adds event to iCal object
-	addEvent(summary, location, start, end, classification, priority, resources) {
+	addEvent(summary, location, start, end, classification, priority, resources, rsvp) {
+		var rsvp_text = "FALSE";
+		if (rsvp == "on") {
+			rsvp_text = "TRUE";
+		}
 		this.events.push({
 			"summary": summary,
 			"location": location,
@@ -22,7 +26,8 @@ class ICalendarGenerator {
 			"end": moment(end, "MM-DD-YYYY HH:mm").format("YYYYMMDDTHHmmss"),
 			"classification": classification,
 			"priority": priority,
-			"resources": resources.trim().replace(/(, )/g, ",")
+			"resources": resources.trim().replace(/(, )/g, ","),
+			"rsvp": rsvp_text
 		});
 	}
 
@@ -59,6 +64,7 @@ class ICalendarGenerator {
 				`SUMMARY:${event.summary}`.trim(),
 				`PRIORITY:${event.priority}`,
 				`LOCATION:${event.location}`.trim(),
+				`RSVP:${event.rsvp}`.trim(),
 				event.resources.length > 0 ? `RESOURCES:${event.resources}` : ``,
 				`END:VEVENT`
 			]);
