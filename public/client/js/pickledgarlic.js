@@ -14,11 +14,10 @@ class ICalendarGenerator {
 	}
 
 	// Adds event to iCal object
-	addEvent(summary, location, start, end, classification, priority, resources, rsvp) {
-		var rsvp_text = "FALSE";
-		if (rsvp == "on") {
-			rsvp_text = "TRUE";
-		}
+	addEvent(summary, location, start, end, classification, priority, resources, rsvp, organizer, attendees) {
+		attendees = attendees.split("\n").filter(line => {
+			return line.length > 0;
+		});
 		this.events.push({
 			"summary": summary,
 			"location": location,
@@ -27,7 +26,9 @@ class ICalendarGenerator {
 			"classification": classification,
 			"priority": priority,
 			"resources": resources.trim().replace(/(, )/g, ","),
-			"rsvp": rsvp_text
+			"rsvp": rsvp,
+			"organizer": organizer,
+			"attendees": attendees
 		});
 	}
 
@@ -64,7 +65,16 @@ class ICalendarGenerator {
 				`SUMMARY:${event.summary}`.trim(),
 				`PRIORITY:${event.priority}`,
 				`LOCATION:${event.location}`.trim(),
-				`RSVP:${event.rsvp}`.trim(),
+				event.rsvp ? `ORGANIZER:${event.organizer}` : ``
+			]);
+			if (event.rsvp) {
+				event.attendees.forEach(attendee => {
+					ical = ical.concat([
+						`ATTENDEE;RSVP=TRUE:mailto:${attendee}`
+					]);
+				});
+			}
+			ical = ical.concat([
 				event.resources.length > 0 ? `RESOURCES:${event.resources}` : ``,
 				`END:VEVENT`
 			]);

@@ -154,10 +154,27 @@
                                     <option value="9">9 (lowest)</option>
                                 </select>
                             </div>
-							<div class="form-group">
-								<label>RSVP</label>
-								<input id="event-rsvp" type="checkbox" class="form-control" name="eventRsvp">
-							</div>						
+                            <div class="form-check">
+                                <label>RSVP</label>
+                                <input id="event-rsvp" type="checkbox" class="form-control" name="eventRsvp">
+                            </div>
+                        </div>
+                        <div id="rsvp-fields" class="collapse">
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label>Organizer</label>
+                                    <span id="organizer-err" class="collapse error-msg"></span>
+                                    <input id="organizer" type="text" class="form-control" name="organizer" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Attendees (each on newline)</label>
+                                    <span id="attendees-err" class="collapse error-msg"></span>
+                                    <textarea name="attendees" id="attendees" cols="80" rows="5" class="form-control"
+                                        placeholder="jsmith@example.com&#10;janedoe@example.com&#10;..." autocomplete="off"></textarea>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
@@ -200,7 +217,7 @@
                         <div class="form-group">
                             <label>Resources (Optional)</label>
                             <input id="event-resources" type="text" class="form-control" name="eventResources"
-                                autocomplete="off" placeholder="e.g. Pen, paper, etc."/>
+                                autocomplete="off" placeholder="e.g. Pen, paper, etc." />
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -215,7 +232,7 @@
 
 </div>
 <script>
-    const validatedFields = ['#event-name', '#start-date', '#end-date', '#event-location'];
+    const validatedFields = ['#event-name', '#start-date', '#end-date', '#event-location', '#organizer', '#attendees'];
 
     // Within elem, remove class target and add class replace
     function substituteClass(elem, target, replace) {
@@ -281,6 +298,9 @@
         // Prevents page refreshing from saving the state of the button if previously enabled
         $('#generate-button').prop('disabled', true);
 
+        // Sets the checkbox to unchecked
+        $('#event-rsvp').prop('checked', false);
+
         // Gets ical VTIMEZONE data incase it the dropdown pre-filled from previous visit
         generateTzData();
 
@@ -305,7 +325,9 @@
             let classification = params.get('eventClass');
             let priority = params.get('eventPrio');
             let resources = params.get('eventResources');
-			let rsvp = params.get('eventRsvp');
+            let rsvp = params.get('eventRsvp') != null ? true : false;
+            let organizer = params.get('organizer');
+            let attendees = params.get('attendees');
 
             if (eventName.trim().length == 0) {
                 // If event name is not filled in 
@@ -343,6 +365,14 @@
                 markInvalid('#end-date', 'date/time should be after start date');
             }
 
+            if (rsvp && organizer.trim().length == 0) {
+                markInvalid('#organizer', 'required if RSVP');
+            }
+
+            if (rsvp && attendees.trim().length == 0) {
+                markInvalid('#attendees', 'required if RSVP')
+            }
+
             // If all necessary form fields are valid
             if (allValid()) {
                 ical.addEvent(
@@ -353,7 +383,9 @@
                     classification,
                     priority,
                     resources,
-					rsvp
+                    rsvp,
+                    organizer,
+                    attendees
                 );
 
                 // Clear Form
@@ -435,6 +467,16 @@
         $('#form-reset-button').on('click', function (e) {
             clearInvalid();
             $('#event-form').trigger('reset');
+        });
+
+        $('#event-rsvp').change(function () {
+            if ($(this).is(':checked')) {
+                // Checkbox is checked
+                $('#rsvp-fields').show();
+            } else {
+                // Checkbox is not checked
+                $('#rsvp-fields').hide();
+            }
         });
 
         // Disables "Generate .ics" button
