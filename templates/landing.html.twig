@@ -1,9 +1,11 @@
 {% extends "layout.html.twig" %}
 
 {% block content %}
-<div class="container">
+<div class="container-fluid">
     <h2>iCalendar Generator</h2>
-
+    <div class="alert alert-warning" role="alert"><svg class="bi bi-info-circle-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" d="M8 16A8 8 0 108 0a8 8 0 000 16zm.93-9.412l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM8 5.5a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+</svg> Please add events and select timezone before generating .ICS file.</div>
     <div class="row mt-4">
         <div class="col">
             <h3>List of Events</h3>
@@ -103,9 +105,13 @@
             <table id="events-table" class="table table-striped">
                 <thead>
                     <th>Event Name</th>
+                    <th>Classification</th>
+                    <th>Priority</th>
                     <th>Start Date</th>
                     <th>End Date</th>
-                    <th>Location</th>
+                    <th>Recurring</th>
+                    <th>Location</th> 
+                    <th></th>
                 </thead>
                 <tbody>
                 </tbody>
@@ -130,6 +136,13 @@
                             <span id="event-name-err" class="collapse error-msg"></span>
                             <input id="event-name" type="text" class="form-control" name="eventName" autocomplete="off">
                         </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <span id="event-description-err" class="collapse error-msg"></span>
+                            <textarea class="form-control" rows=5 name="eventDescription" id="event-description"></textarea>
+                        </div>
+                            
+                        </label><BR>
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label>Classification</label>
@@ -198,6 +211,26 @@
                             <input id="event-resources" type="text" class="form-control" name="eventResources"
                                 autocomplete="off" placeholder="e.g. Pen, paper, etc."/>
                         </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                              <label>Recurring</label>
+                              <select class="custom-select mr-sm-2" id="event-recurring" name="eventRecurring">
+                                <option value="" selected>None</option>
+                                <option value="WEEKLY" >Every Week</option>
+                                <option value="MONTHLY" >Every Month</option>
+                                <option value="YEARLY" >Every Year</option>
+                              </select>
+                            </div>
+                            
+                            <div class="form-group col-md-6" style="display:none;">
+                                <label>Recurring Exception</label>
+                                <input id="event-recurring-exception" type="text" class="form-control" name="eventRecurringException"
+                                autocomplete="off" placeholder="e.g 1,12 separate by comma."/>
+                            </div>
+                            <div class="form-group col-md-12" style="display:none;"><small id="passwordHelpBlock" class="form-text text-muted">Enter Recurring Exception value by number of week, month, year separate by comma.</span></div>
+                        </div>
+                        
                     </div>
                     <div class="modal-footer">
                         <button id="form-reset-button" type="button" class="btn btn-light border-grey">Reset</button>
@@ -273,12 +306,15 @@
     var ical = new ICalendarGenerator();
 
     $(document).ready(function () {
+       
+
         // Sets the "Generate .ics" button to disabled
         // Prevents page refreshing from saving the state of the button if previously enabled
         $('#generate-button').prop('disabled', true);
 
         // Gets ical VTIMEZONE data incase it the dropdown pre-filled from previous visit
         generateTzData();
+        
 
         // Renders tables with class 'data-table' as a DataTable
         var eventTable = $('#events-table').DataTable({
@@ -287,21 +323,37 @@
             "language": {
                 "emptyTable": "No events added"
             }
-        });
 
+        });
+        
+        $('#events-table').on('click', 'tbody td a.edit-event', function (e) {
+          $tr = $(this).closest('tr');						
+          e.stopPropagation();
+        });	 
+        $('#events-table').on('click', 'tbody td a.delete-event', function (e) {
+          $tr = $(this).closest('tr');	
+          var title = eventTable.row($tr).data()[0];   
+          ical.removeEvent(title) ;         
+          eventTable.row($tr).remove().draw(false);          
+          e.stopPropagation();
+        });	
+         
+                
         // When the create event form is submitted
         $('#event-form').on('submit', function (e) {
             e.preventDefault();
             clearInvalid();
             let params = new URLSearchParams($(this).serialize());
             let eventName = params.get('eventName');
+            let description = params.get('eventDescription');
             let location = params.get('eventLocation');
             let startDate = params.get('startDate');
             let endDate = params.get('endDate');
             let classification = params.get('eventClass');
             let priority = params.get('eventPrio');
             let resources = params.get('eventResources');
-
+            let recurring = params.get('eventRecurring');
+            let recurring_exception = params.get('eventRecurringException');
             if (eventName.trim().length == 0) {
                 // If event name is not filled in 
                 markInvalid('#event-name', 'required');
@@ -342,12 +394,15 @@
             if (allValid()) {
                 ical.addEvent(
                     eventName,
+                    description,
                     location,
                     startDate,
                     endDate,
                     classification,
                     priority,
-                    resources
+                    resources,
+                    recurring,
+                    recurring_exception
                 );
 
                 // Clear Form
@@ -356,9 +411,13 @@
                 // Push event data to event table
                 eventTable.row.add([
                     eventName,
+                    classification,
+                    priority,
                     startDate,
                     endDate,
-                    location
+                    recurring,
+                    location,
+                    '<a href="#" class="delete-event" onclick="">Delete</a>',
                 ]).draw(false);
 
                 // Enable the generate button if disabled, since there now exists an event to generate an iCal file 
@@ -468,5 +527,12 @@
             }
         }
     });
+    /*
+  ClassicEditor
+		.create( document.querySelector( '#event-description' ) )
+		.catch( error => {
+			console.error( error );
+		} );
+    */
 </script>
 {% endblock content%}
