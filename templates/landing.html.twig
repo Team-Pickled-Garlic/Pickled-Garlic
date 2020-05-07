@@ -108,13 +108,16 @@
             <table id="events-table" class="table table-striped">
                 <thead>
                     <th>Event Name</th>
-                    <th>Classification</th>
-                    <th>Priority</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Recurring</th>
-                    <th>Location</th>
-                    <th></th>
+                    <th>Class</th>
+                    <th>Prio</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Recur</th>
+                    <th>Organizer</th>
+                    <th>Att</th>
+                    <th>Loc</th>
+                    <th>Lat/Long</th>
+                    <th>Option</th>
                 </thead>
                 <tbody>
                 </tbody>
@@ -468,9 +471,9 @@
             if (eventName.trim().length == 0) {
                 // If event name is not filled in 
                 markInvalid('#event-name', 'required');
-            } else if (eventName.length > 50) {
+            } else if (eventName.length > 60) {
                 // If event name too long
-                markInvalid('#event-name', 'must be less than 50 characters');
+                markInvalid('#event-name', 'must be less than 60 characters');
             } else if (eventName.match(/[@#$%^*`;]/g) != null) {
                 // If event name contains specified special characters
                 markInvalid('#event-name', 'should not contain @ # $ % ^ & * ` ;');
@@ -479,9 +482,9 @@
             if (location.trim().length == 0) {
                 // If event location is not filled in 
                 markInvalid('#event-location', 'required');
-            } else if (location.length > 50) {
+            } else if (location.length > 60) {
                 // If event length too long
-                markInvalid('#event-location', 'must be less than 50 characters');
+                markInvalid('#event-location', 'must be less than 60 characters');
             } else if (location.match(/[@#$%^*`;]/g) != null) {
                 // If event location contains specified special characters
                 markInvalid('#event-location', 'should not contain @ # $ % ^ & * ` ;');
@@ -553,7 +556,10 @@
                     startDate,
                     endDate,
                     recurring,
+                    organizer,
+                    attendees,
                     location,
+                    latlong,
                     '<a href="#" class="delete-event" onclick="">Delete</a>',
                 ]).draw(false);
 
