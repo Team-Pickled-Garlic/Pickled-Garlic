@@ -334,8 +334,8 @@
 
     // iCalendar Object
     var ical = new ICalendarGenerator();
-    var startDatePicker;
-    var endDatePicker;
+
+    var startDatePicker, endDatePicker;
     $(document).ready(function () {
 
 
@@ -362,8 +362,6 @@
             }
 
         });
-
-
 
         $('#events-table').on('click', 'tbody td a.edit-event', function (e) {
             $tr = $(this).closest('tr');
@@ -441,10 +439,14 @@
 
             if (rsvp && organizer.trim().length == 0) {
                 markInvalid('#organizer', 'required if RSVP');
+            } else if (rsvp && !matchEmailAddress(organizer)) {
+                markInvalid('#organizer', 'invalid email address');
             }
 
             if (rsvp && attendees.trim().length == 0) {
-                markInvalid('#attendees', 'required if RSVP')
+                markInvalid('#attendees', 'required if RSVP');
+            } else if (rsvp && !matchEmailAddress(attendees)) {
+                markInvalid('#attendees', 'at least one attendee has invalid email address');
             }
 
             // If all necessary form fields are valid
@@ -497,14 +499,14 @@
         };
 
         // Creates the WindowDatePicker for start date
-        startDatePicker = new WindowDatePicker(Object.assign(wdpConfig, {
+         startDatePicker = new WindowDatePicker(Object.assign(wdpConfig, {
             el: '#start-date-picker',
             toggleEl: '#show-start-date-picker',
             inputEl: '#start-date',
         }));
 
         // Creates WindowDatePicker for end date
-        endDatePicker = new WindowDatePicker(Object.assign(wdpConfig, {
+         endDatePicker = new WindowDatePicker(Object.assign(wdpConfig, {
             el: '#end-date-picker',
             toggleEl: '#show-end-date-picker',
             inputEl: '#end-date',
@@ -516,6 +518,10 @@
             if (endDatePicker.get().value == "" && startDatePicker.get().value != "") {
                 let date = startDatePicker.get();
                 endDatePicker.set(`${date.month}/${date.day + 1}/${date.year} ${date.hour}:${date.minute}`);
+                // Fixes NaN error when selecting day before start of next month
+                if (isNaN(endDatePicker.get().day)) {
+                    endDatePicker.set(`${date.month + 1}/1/${date.year} ${date.hour}:${date.minute}`);
+                }
             }
         });
 
@@ -604,6 +610,21 @@
             } else {
                 // Blanks tzData when "Select Timezone" option is active
                 tzData = "";
+            }
+        }
+
+        // Checks single and multiline strings if they match email address format
+        // Returns true if all lines match, false if not
+        function matchEmailAddress(email) {
+            let addresses = email.split("\n").filter(line => {
+                return line.length > 0;
+            });
+            let emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/gm;
+            let match = email.match(emailRegex);
+            if (match == null) {
+                return false;
+            } else {
+                return match.length == addresses.length;
             }
         }
     });
