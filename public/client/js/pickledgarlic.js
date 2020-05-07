@@ -42,6 +42,7 @@ class ICalendarGenerator {
 			"organizer": organizer,
 			"sentby": sentby,
 			"attendees": attendees,
+			"latlong": latlong,
       		"recurring": recurring,
 			"recurring_exception": recurring_exception
 		});
@@ -90,7 +91,7 @@ class ICalendarGenerator {
 				event.description.length > 0 ? `DESCRIPTION:${event.description}`.trim() : ``,
 				`PRIORITY:${event.priority}`,
 				`LOCATION:${event.location}`.trim(),
-				event.latlong.length > 0 ? `GEO:${latlong.replace(/(, )/g, ';')}` : ``,
+				event.latlong.length > 0 ? `GEO:${event.latlong.replace(/(, )/g, ';')}` : ``,
 				organizerSentby
 			]);
 			if (event.rsvp) {
