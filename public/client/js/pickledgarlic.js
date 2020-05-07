@@ -24,7 +24,7 @@ class ICalendarGenerator {
 
 	// Adds event to iCal object
 	addEvent(summary, description, location, start, end, classification, priority, resources, 
-		rsvp, organizer, attendees, recurring, recurring_exception) {
+		rsvp, organizer, sentby, attendees, recurring, recurring_exception) {
 
 		attendees = attendees.split("\n").filter(line => {
 			return line.length > 0;
@@ -40,6 +40,7 @@ class ICalendarGenerator {
 			"resources": resources.trim().replace(/(, )/g, ","),
 			"rsvp": rsvp,
 			"organizer": organizer,
+			"sentby": sentby,
 			"attendees": attendees,
       		"recurring": recurring,
 			"recurring_exception": recurring_exception
@@ -56,8 +57,6 @@ class ICalendarGenerator {
 		return str.replace(/[\r\n]+/gm, "");
 	}
 
-	find
-
 	// Generates contents of iCal file
 	generateCal(tzData) {
 		this.created = moment().utc().format("YYYYMMDDTHHmmss") + "Z";
@@ -71,6 +70,15 @@ class ICalendarGenerator {
 		].concat(tzData);
 
 		this.events.forEach(event => {
+			let organizerSentby = "";
+			if (event.sentby.trim().length == 0 && event.organizer.trim().length > 0) {
+				organizerSentby = `ORGANIZER:mailto:${event.organizer}`;
+			} else if (event.sentby.trim().length > 0 && event.organizer.trim().length > 0) {
+				organizerSentby = `ORGANIZER;SENT-BY="mailto:${event.sentby}":mailto:${event.organizer}`;
+			} else {
+				organizerSentby = ``;
+			}
+
 			ical = ical.concat([
 				`BEGIN:VEVENT`,
 				`DTSTAMP:${this.created}`.trim(),
@@ -82,7 +90,7 @@ class ICalendarGenerator {
 				event.description.length > 0 ? `DESCRIPTION:${event.description}`.trim() : ``,
 				`PRIORITY:${event.priority}`,
 				`LOCATION:${event.location}`.trim(),
-				event.rsvp ? `ORGANIZER:${event.organizer}` : ``
+				organizerSentby
 			]);
 			if (event.rsvp) {
 				event.attendees.forEach(attendee => {

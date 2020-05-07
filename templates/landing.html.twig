@@ -176,15 +176,23 @@
                                 <input id="event-rsvp" type="checkbox" class="form-control" name="eventRsvp">
                             </div>
                         </div>
-                        <div id="rsvp-fields" class="collapse">
-                            <div class="form-row">
-                                <div class="form-group col-md-12">
-                                    <label>Organizer</label>
-                                    <span id="organizer-err" class="collapse error-msg"></span>
-                                    <input id="organizer" type="text" class="form-control" name="organizer"
-                                        autocomplete="off">
-                                </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label>Organizer (Optional)</label>
+                                <span id="organizer-err" class="collapse error-msg"></span>
+                                <input id="organizer" type="text" class="form-control" name="organizer"
+                                    autocomplete="off">
                             </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label>Sent-By (Optional)</label>
+                                <span id="sentby-err" class="collapse error-msg"></span>
+                                <input id="sentby" type="text" class="form-control" name="sentby"
+                                    autocomplete="off">
+                            </div>
+                        </div>
+                        <div id="rsvp-fields" class="collapse">
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Attendees (each on newline)</label>
@@ -274,7 +282,7 @@
 
 </div>
 <script>
-    const validatedFields = ['#event-name', '#start-date', '#end-date', '#event-location', '#organizer', '#attendees'];
+    const validatedFields = ['#event-name', '#start-date', '#end-date', '#event-location', '#organizer', '#attendees', '#sentby'];
 
     // Within elem, remove class target and add class replace
     function substituteClass(elem, target, replace) {
@@ -335,7 +343,6 @@
     // iCalendar Object
     var ical = new ICalendarGenerator();
 
-    var startDatePicker, endDatePicker;
     $(document).ready(function () {
 
 
@@ -397,6 +404,7 @@
             let resources = params.get('eventResources');
             let rsvp = params.get('eventRsvp') != null ? true : false;
             let organizer = params.get('organizer');
+            let sentby = params.get('sentby');
             let attendees = params.get('attendees');
             let recurring = params.get('eventRecurring');
             let recurring_exception = params.get('eventRecurringException');
@@ -437,10 +445,18 @@
                 markInvalid('#end-date', 'date/time should be after start date');
             }
 
-            if (rsvp && organizer.trim().length == 0) {
+            if (organizer.trim().length > 0 && !matchEmailAddress(organizer)) {
+                markInvalid('#organizer', 'must be valid email address if entered');
+            } else if (sentby.trim().length >  0 && organizer.trim().length  == 0) {
+                markInvalid('#organizer', 'required if Sent-By is entered');
+            } else if (rsvp && organizer.trim().length == 0) {
                 markInvalid('#organizer', 'required if RSVP');
             } else if (rsvp && !matchEmailAddress(organizer)) {
                 markInvalid('#organizer', 'invalid email address');
+            }
+
+            if (sentby.trim().length > 0 && !matchEmailAddress(sentby)) {
+                markInvalid('#sentby', 'must be a valid email address if entered');
             }
 
             if (rsvp && attendees.trim().length == 0) {
@@ -448,6 +464,7 @@
             } else if (rsvp && !matchEmailAddress(attendees)) {
                 markInvalid('#attendees', 'at least one attendee has invalid email address');
             }
+
 
             // If all necessary form fields are valid
             if (allValid()) {
@@ -462,6 +479,7 @@
                     resources,
                     rsvp,
                     organizer,
+                    sentby,
                     attendees,
                     recurring,
                     recurring_exception
@@ -499,14 +517,14 @@
         };
 
         // Creates the WindowDatePicker for start date
-         startDatePicker = new WindowDatePicker(Object.assign(wdpConfig, {
+        const startDatePicker = new WindowDatePicker(Object.assign(wdpConfig, {
             el: '#start-date-picker',
             toggleEl: '#show-start-date-picker',
             inputEl: '#start-date',
         }));
 
         // Creates WindowDatePicker for end date
-         endDatePicker = new WindowDatePicker(Object.assign(wdpConfig, {
+        const endDatePicker = new WindowDatePicker(Object.assign(wdpConfig, {
             el: '#end-date-picker',
             toggleEl: '#show-end-date-picker',
             inputEl: '#end-date',
