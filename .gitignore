@@ -9,3 +9,7 @@ cache/
 
 # Ignore VS Code config files
 .vscode/
+
+# Ignore file containing Google API Key
+maps-api.html.twig
+
