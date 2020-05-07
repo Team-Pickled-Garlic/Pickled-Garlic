@@ -24,7 +24,7 @@ class ICalendarGenerator {
 
 	// Adds event to iCal object
 	addEvent(summary, description, location, start, end, classification, priority, resources, 
-		rsvp, organizer, sentby, attendees, recurring, recurring_exception) {
+		rsvp, organizer, sentby, attendees, latlong, recurring, recurring_exception) {
 
 		attendees = attendees.split("\n").filter(line => {
 			return line.length > 0;
@@ -90,6 +90,7 @@ class ICalendarGenerator {
 				event.description.length > 0 ? `DESCRIPTION:${event.description}`.trim() : ``,
 				`PRIORITY:${event.priority}`,
 				`LOCATION:${event.location}`.trim(),
+				event.latlong.length > 0 ? `GEO:${latlong.replace(/(, )/g, ';')}` : ``,
 				organizerSentby
 			]);
 			if (event.rsvp) {

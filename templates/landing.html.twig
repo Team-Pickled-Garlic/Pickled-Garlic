@@ -188,8 +188,7 @@
                             <div class="form-group col-md-12">
                                 <label>Sent-By (Optional)</label>
                                 <span id="sentby-err" class="collapse error-msg"></span>
-                                <input id="sentby" type="text" class="form-control" name="sentby"
-                                    autocomplete="off">
+                                <input id="sentby" type="text" class="form-control" name="sentby" autocomplete="off">
                             </div>
                         </div>
                         <div id="rsvp-fields" class="collapse">
@@ -238,8 +237,33 @@
                         <div class="form-group">
                             <label>Location</label>
                             <span id="event-location-err" class="collapse error-msg"></span>
-                            <input id="event-location" type="text" class="form-control" name="eventLocation"
-                                autocomplete="off">
+                            <div class="input-group">
+                                <input id="event-location" type="text" class="form-control inherit-height"
+                                    name="eventLocation" autocomplete="off">
+                                <div class="input-group-append">
+                                    <button id="geolocation-button" class="btn btn-light border-grey" type="button">
+                                        Use Geolocation
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="geolocation-info">
+                            <div class="form-group">
+                                <label>Latitude/Longitude (From Geolocation)</label>
+                                <input id="lat-long" type="text" class="form-control readonly" name="latlong" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Address (From Geolocation)</label>
+                                <div class="input-group">
+                                    <input id="address" type="text" class="form-control readonly" name="address"
+                                        disabled>
+                                    <div class="input-group-append">
+                                        <button id="use-address" class="btn btn-light border-grey" type="button">
+                                            Use as Location
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Resources (Optional)</label>
@@ -271,17 +295,48 @@
 
                     </div>
                     <div class="modal-footer">
+                        <button id="clear-geodata" type="button" class="btn btn-light border-grey">Clear Geolocation Data</button>
                         <button id="form-reset-button" type="button" class="btn btn-light border-grey">Reset</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Add Event</button>
                     </div>
                 </form>
+
             </div>
+
         </div>
     </div>
 
 </div>
 <script>
+    function initMap() {
+        var geocoder = new google.maps.Geocoder();
+        document.getElementById('geolocation-button').addEventListener('click', function () {
+            geocodeAddress(geocoder);
+        });
+    }
+
+    function geocodeAddress(geocoder) {
+        var address = document.getElementById('event-location').value;
+        geocoder.geocode({
+            'address': address
+        }, function (results, status) {
+            if (status === 'OK') {
+                let lat = results[0].geometry.viewport.Ya.i;
+                let long = results[0].geometry.viewport.Ua.i;
+                let address = results[0].formatted_address;
+                fillGeoData([lat, long, address]);
+            } else {
+                markInvalid('#event-location', 'must input location before attempting geo location');
+            }
+        });
+    }
+
+    function fillGeoData(geoData) {
+        $('#lat-long').val(`${geoData[0]}, ${geoData[1]}`);
+        $('#address').val(geoData[2]);
+    }
+
     const validatedFields = ['#event-name', '#start-date', '#end-date', '#event-location', '#organizer', '#attendees', '#sentby'];
 
     // Within elem, remove class target and add class replace
@@ -344,7 +399,7 @@
     var ical = new ICalendarGenerator();
 
     $(document).ready(function () {
-
+        $('#event-form').trigger('reset');
 
         // Sets the "Generate .ics" button to disabled
         // Prevents page refreshing from saving the state of the button if previously enabled
@@ -406,6 +461,7 @@
             let organizer = params.get('organizer');
             let sentby = params.get('sentby');
             let attendees = params.get('attendees');
+            let latlong = params.get('latlong');
             let recurring = params.get('eventRecurring');
             let recurring_exception = params.get('eventRecurringException');
 
@@ -447,7 +503,7 @@
 
             if (organizer.trim().length > 0 && !matchEmailAddress(organizer)) {
                 markInvalid('#organizer', 'must be valid email address if entered');
-            } else if (sentby.trim().length >  0 && organizer.trim().length  == 0) {
+            } else if (sentby.trim().length > 0 && organizer.trim().length == 0) {
                 markInvalid('#organizer', 'required if Sent-By is entered');
             } else if (rsvp && organizer.trim().length == 0) {
                 markInvalid('#organizer', 'required if RSVP');
@@ -481,6 +537,7 @@
                     organizer,
                     sentby,
                     attendees,
+                    latlong,
                     recurring,
                     recurring_exception
                 );
@@ -573,6 +630,15 @@
             resetForm();
         });
 
+        // Uses Address fetched from geolocation as event location
+        $('#use-address').on('click', function (e) {
+            $('#event-location').val($('#address').val());
+        });
+
+        $('#clear-geodata').on('click', function(e){
+            clearGeoData();
+        });
+
         $('#event-rsvp').change(function () {
             if ($(this).is(':checked')) {
                 // Checkbox is checked
@@ -582,6 +648,12 @@
                 $('#rsvp-fields').hide();
             }
         });
+
+        // Clears latitude/longitude and address
+        function clearGeoData(){
+            $('#lat-long').val('');
+            $('#address').val('');
+        }
 
         // Resets form
         function resetForm() {
