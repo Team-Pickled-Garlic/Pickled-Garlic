@@ -12,14 +12,26 @@ class ICalendarGenerator {
 			return v.toString(16);
 		});
 	}
+	removeEvent(summary, start) {
+		let index = 0;
+		this.events.forEach(event => {
+			if (`${event.summary}` == summary && event.start == moment(start, "MM-DD-YYYY HH:mm").format("YYYYMMDDTHHmmss")) {
+				this.events.splice(index, 1);
+			}
+			index++;
+		});
+	}
 
 	// Adds event to iCal object
-	addEvent(summary, location, start, end, classification, priority, resources, rsvp, organizer, attendees) {
+	addEvent(summary, description, location, start, end, classification, priority, resources, 
+		rsvp, organizer, attendees, recurring, recurring_exception) {
+
 		attendees = attendees.split("\n").filter(line => {
 			return line.length > 0;
 		});
 		this.events.push({
 			"summary": summary,
+			"description": description,
 			"location": location,
 			"start": moment(start, "MM-DD-YYYY HH:mm").format("YYYYMMDDTHHmmss"),
 			"end": moment(end, "MM-DD-YYYY HH:mm").format("YYYYMMDDTHHmmss"),
@@ -28,7 +40,9 @@ class ICalendarGenerator {
 			"resources": resources.trim().replace(/(, )/g, ","),
 			"rsvp": rsvp,
 			"organizer": organizer,
-			"attendees": attendees
+			"attendees": attendees,
+      		"recurring": recurring,
+			"recurring_exception": recurring_exception
 		});
 	}
 
@@ -41,6 +55,8 @@ class ICalendarGenerator {
 	removeNewlines(str) {
 		return str.replace(/[\r\n]+/gm, "");
 	}
+
+	find
 
 	// Generates contents of iCal file
 	generateCal(tzData) {
@@ -63,19 +79,19 @@ class ICalendarGenerator {
 				this.removeNewlines(`DTEND;TZID=${tzid}:${event.end}`),
 				`CLASS:${event.classification}`,
 				`SUMMARY:${event.summary}`.trim(),
+				event.description.length > 0 ? `DESCRIPTION:${event.description}`.trim() : ``,
 				`PRIORITY:${event.priority}`,
 				`LOCATION:${event.location}`.trim(),
 				event.rsvp ? `ORGANIZER:${event.organizer}` : ``
 			]);
 			if (event.rsvp) {
 				event.attendees.forEach(attendee => {
-					ical = ical.concat([
-						`ATTENDEE;RSVP=TRUE:mailto:${attendee}`
-					]);
+					ical = ical.concat([`ATTENDEE;RSVP=TRUE:mailto:${attendee}`]);
 				});
 			}
 			ical = ical.concat([
 				event.resources.length > 0 ? `RESOURCES:${event.resources}` : ``,
+				event.recurring.length > 0 ? `RRULE:FREQ=${event.recurring}` : ``,
 				`END:VEVENT`
 			]);
 		});
